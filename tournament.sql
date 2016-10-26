@@ -16,21 +16,23 @@ CREATE DATABASE tournament;
 \connect tournament
 
 --Drop existing items
-DROP TABLE IF EXISTS player CASCADE;
-DROP TABLE IF EXISTS player CASCADE;
-DROP VIEW IF EXISTS player CASCADE;
+DROP TABLE IF EXISTS players CASCADE;
+DROP TABLE IF EXISTS players CASCADE;
+DROP VIEW IF EXISTS players CASCADE;
+DROP TABLE IF EXISTS matches CASCADE;
 
 --Create player table
-CREATE TABLE player(
-	player_id serial PRIMARY KEY,
-	player_name text
+CREATE TABLE players(
+	id serial PRIMARY KEY,
+	name text
 );
 
 --Create match table with Foreign Key to player
-CREATE TABLE match(
-	match_id serial PRIMARY KEY,
+CREATE TABLE matches(
+	id serial PRIMARY KEY,
 	winner INTEGER,
 	loser INTEGER,
-	FOREIGN KEY(winner) REFERENCES player(player_id),
-	FOREIGN KEY(loser) REFERENCES player(player_id)
+	FOREIGN KEY(winner) REFERENCES players(id),
+	FOREIGN KEY(loser) REFERENCES players(id)
 );
+
