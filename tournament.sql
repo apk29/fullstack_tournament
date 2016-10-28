@@ -8,31 +8,38 @@
 
 --Drop tournament database if it is already there
 DROP DATABASE IF EXISTS tournament;
-
 --Create Database "Tournament"
 CREATE DATABASE tournament;
-
 --Connect to the tournament database
-\connect tournament
+\connect tournament;
 
 --Drop existing items
 DROP TABLE IF EXISTS players CASCADE;
 DROP TABLE IF EXISTS players CASCADE;
 DROP VIEW IF EXISTS players CASCADE;
 DROP TABLE IF EXISTS matches CASCADE;
-
 --Create player table
 CREATE TABLE players(
-	id serial PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	name text
 );
-
 --Create match table with Foreign Key to player
 CREATE TABLE matches(
-	id serial PRIMARY KEY,
-	winner INTEGER,
-	loser INTEGER,
-	FOREIGN KEY(winner) REFERENCES players(id),
-	FOREIGN KEY(loser) REFERENCES players(id)
+	m_id serial PRIMARY KEY,
+	winner INTEGER REFERENCES players(id) NOT NULL,
+	loser INTEGER REFERENCES players(id) NOT NULL
+	
 );
-
+CREATE VIEW standings AS
+SELECT players.id, players.name,
+(SELECT count(matches.winner)
+	FROM matches
+	WHERE players.id = matches.winner)
+	AS total_wins,
+(SELECT count(matches.m_id)
+	FROM matches
+	WHERE players.id = matches.winner
+	OR players.id = matches.loser)
+	as total_matches
+FROM players
+ORDER BY total_wins DESC, total_matches DESC;

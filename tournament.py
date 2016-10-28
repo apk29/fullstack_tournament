@@ -15,7 +15,8 @@ def deleteMatches():
     """Remove all the match records from the database."""
     c = connect()
     cursor = c.cursor()
-    cursor.execute("DELETE FROM match")
+    query = ("DELETE FROM matches;")
+    cursor.execute(query)
     c.commit()
     c.close()
     
@@ -24,7 +25,8 @@ def deletePlayers():
     """Remove all the player records from the database."""
     c = connect()
     cursor = c.cursor()
-    cursor.execute("DELETE FROM player")
+    query = ("DELETE FROM players;")
+    cursor.execute(query)
     c.commit()
     c.close()
 
@@ -32,7 +34,8 @@ def countPlayers():
     """Returns the number of players currently registered."""
     c = connect()
     cursor = c.cursor()
-    cursor.execute("SELECT COUNT(*) FROM player")
+    query = ("SELECT COUNT(*) FROM players")
+    cursor.execute(query)
     count = cursor.fetchone()[0]
     c.close()
     return count
@@ -49,7 +52,8 @@ def registerPlayer(name):
     c = connect()
     cursor = c.cursor()
     bleach_name = bleach.clean(name, strip=True)
-    cursor.execute("INSERT INTO player(player_name) values (%s)", (bleach_name,))
+    query = ("INSERT INTO players (name) VALUES (%s)")
+    cursor.execute(query,(bleach_name,))
     c.commit()
     c.close()
 
@@ -66,7 +70,14 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-
+	
+    c = connect()
+    cursor = c.cursor()
+    query = ("SELECT * FROM standings;")
+    cursor.execute(query)
+    match = cursor.fetchall()
+    c.close()
+    return match
 
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
@@ -75,6 +86,13 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    c = connect()
+    cursor = c.cursor()
+    query = ("INSERT INTO matches(m_id,winner,loser) \
+    			VALUES (default, %s, %s);")
+    cursor.execute(query,(winner, loser,))
+    c.commit()
+    c.close()
  
  
 def swissPairings():
@@ -93,4 +111,18 @@ def swissPairings():
         name2: the second player's name
     """
 
-
+    c = connect()
+    cursor = c.cursor()
+    query = ("SELECT * FROM standings")
+    cursor.execute(query)
+    match = cursor.fetchall()
+    pairs = []
+    count = len(match)
+	
+    for i in range(0, count -1,2):
+        paired_list = (match[i][0], match[i][1], match[i + 1][0], match[i + 1][1])
+        pairs.append(paired_list)
+		
+    c.close()
+    print pairs
+    return pairs
