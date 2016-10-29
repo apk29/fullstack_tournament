@@ -38,6 +38,7 @@ def countPlayers():
     cursor.execute(query)
     count = cursor.fetchone()[0]
     c.close()
+    
     return count
 
 def registerPlayer(name):
@@ -93,7 +94,7 @@ def reportMatch(winner, loser):
     cursor.execute(query,(winner, loser,))
     c.commit()
     c.close()
- 
+    
  
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -116,13 +117,25 @@ def swissPairings():
     query = ("SELECT * FROM standings")
     cursor.execute(query)
     match = cursor.fetchall()
+    standings = playerStandings()
+    player = [i[0:2] for i in standings]
+    index = 0
     pairs = []
-    count = len(match)
-	
-    for i in range(0, count -1,2):
-        paired_list = (match[i][0], match[i][1], match[i + 1][0], match[i + 1][1])
-        pairs.append(paired_list)
-		
-    c.close()
+    count = countPlayers()
+    while (index < count):
+        pair = player[index] + player [index + 1]
+        pairs.append(pair)
+        index = index + 2
+    c.close
+    print ""
+    print player
+    print ""
     print pairs
     return pairs
+	
+
+
+
+
+
+
