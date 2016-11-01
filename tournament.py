@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # 
 # tournament.py -- implementation of a Swiss-system tournament
-#
+# Some code made have it's origins from stack or the udacity forum and have been modified 
+# to work with this programming.
 
 import psycopg2
 import bleach
@@ -38,7 +39,6 @@ def countPlayers():
     cursor.execute(query)
     count = cursor.fetchone()[0]
     c.close()
-    
     return count
 
 def registerPlayer(name):
@@ -110,6 +110,8 @@ def swissPairings():
         name1: the first player's name
         id2: the second player's unique id
         name2: the second player's name
+        
+        
     """
 
     c = connect()
@@ -127,10 +129,7 @@ def swissPairings():
         pairs.append(pair)
         index = index + 2
     c.close
-    print ""
-    print player
-    print ""
-    print pairs
+    
     return pairs
 	
 
